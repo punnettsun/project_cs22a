@@ -1,1 +1,2 @@
 mingus==0.5.1
+pyFluidSynth==1.2.5

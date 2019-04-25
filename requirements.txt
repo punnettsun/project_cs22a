@@ -1,2 +1,5 @@
 mingus==0.5.1
 pyFluidSynth==1.2.5
+synthesizer==0.1.5
+beautifulsoup4==4.7.1
+requests==2.21.0

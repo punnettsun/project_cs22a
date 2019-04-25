@@ -1,4 +1,5 @@
 from synthesizer import Player, Synthesizer, Waveform
+import csv
 
 
 protein_sequence = 'MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPKVKAHGKKVLGAFSDGLAHLDNLKGTFATLSELHCDKLHVDPENFRLLGNVLVCVLAHHFGKEFTPPVQAAYQKVVAGVANALAHKYH'
@@ -8,27 +9,38 @@ less_hydrophobic_aa = ['A', 'Y', 'H', 'T', 'S', 'P', 'G']  # A - G single notes 
 part_hydrophobic_aa = ['R', 'K']  # A - G major chords with sawtooth wave
 non_hydrophobic_aa = ['N', 'Q', 'D', 'E']  # A - G minor chords with sine wave
 
-single_notes = [440.00, 493.88, 261.63, 293.66, 329.63, 349.23, 392.00]
+small = ['A', 'G', 'S', 'D', 'C', 'P', 'N', 'T']
+medium = ['Q', 'E', 'H', 'V']
+large = ['R', 'I', 'L', 'K', 'M', 'F', 'W', 'Y']
 
-A = [440.00, 277.18, 329.63]
-B = [493.88, 311.13, 369.99]
-C = [261.63, 329.63, 392.00]
-D = [293.66, 369.99, 440.00]
-E = [329.63, 415.30, 493.88]
-F = [349.23, 440.00, 261.63]
-G = [392.00, 493.88, 293.66]
+with open('./note_frequency.csv', mode='r') as file:
+    reader = csv.DictReader(file)
+    notes = {r['note']: float(r['frequency']) for r in reader}
+
+
+# A4 through D#6
+note_range = list(notes.keys())[57:76]
+# print(note_range)
+
+single_notes = ['A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5']
+
+A = ['A4', 'C#5', 'E5']
+B = ['B4', 'D#5', 'F#5']
+C = ['C5', 'E5', 'G5']
+D = ['D5', 'F#5', 'A5']
+E = ['E5', 'G#5', 'B5']
+F = ['F5', 'A5', 'C6']
+G = ['G5', 'B5', 'D6']
 
 major_chords = [A, B, C, D, E, F, G]
+extra_chords = [C, D]
 
-a = [440.00, 261.63, 329.63]
-b = [493.88, 293.66, 369.99]
-c = [261.63, 311.13, 392.00]
-d = [293.66, 349.23, 440.00]
-e = [329.63, 392.00, 493.88]
-f = [349.23, 415.30, 261.63]
-g = [392.00, 466.16, 293.66]
+f_sharp = ['F#5', 'A5', 'C#6']
+g_sharp = ['G#5', 'B5', 'D#6']
+a_sharp = ['A#4', 'C#5', 'F5']
+c_sharp = ['C#5', 'E5', 'G#5']
 
-minor_chords = [a, b, c, d, e, f, g]
+minor_chords = [f_sharp, g_sharp, a_sharp, c_sharp]
 
 association = {}
 
@@ -46,15 +58,26 @@ def get_association(sequence, amino_acids, notes, instrument='sine'):
     assoc = {}
     for aa, note in zip(sorted_aa, notes):
         assoc[aa] = (note, instrument)
-    print(assoc)
+    # print(assoc)
     return assoc
+
+
+def print_notes(note):
+    note_string = ''
+    for n in note_range:
+        if n in note:
+            note_string += n
+        else:
+            note_string += ' '
+    print(note_string)
+
 
 association.update(get_association(protein_sequence, hydrophobic_aa, major_chords))
 association.update(get_association(protein_sequence, less_hydrophobic_aa, single_notes))
-association.update(get_association(protein_sequence, part_hydrophobic_aa, major_chords, 'sawtooth'))
+association.update(get_association(protein_sequence, part_hydrophobic_aa, extra_chords, 'sawtooth'))
 association.update(get_association(protein_sequence, non_hydrophobic_aa, minor_chords))
 
-print(association)
+# print(association)
 
 player = Player()
 player.open_stream()
@@ -69,9 +92,10 @@ for idx, aa in enumerate(protein_sequence):
     length = 0.2 if idx != len(protein_sequence) - 1 else 1
 
     if type(note) == list:
-        sound = synthesizer[instrument].generate_chord(note, length)
+        sound = synthesizer[instrument].generate_chord([notes[n] for n in note], length)
+        print_notes(note)
     else:
-        sound = synthesizer[instrument].generate_constant_wave(note, length)
+        sound = synthesizer[instrument].generate_constant_wave(notes[note], length)
+        print_notes([note])
 
-    print(aa)
     player.play_wave(sound)

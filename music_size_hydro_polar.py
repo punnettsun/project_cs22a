@@ -45,9 +45,9 @@ minor_chord_freq = {'F#minor':[739.99,880.00,1108.73],'G#minor':[830.61,987.77,1
                     'Bbminor':[446.16,554.37,698.46],'C#minor':[554.37,659.25,830.61]}
 
 ##SIZE of amino acids
-small = ['A','G','S','D','C','P','N','T']
-medium = ['Q','E','H','V']
-large = ['R','I','L','K','M','F','W','Y']
+small = ['A','G','S','C','P','T','V']
+medium = ['N','D','E','Q','O','I','L','K','M','U']
+large = ['R','W','Y','H','F']
 
 ##Nonpolar/Polar
 nonpolar = ['F','W','I','L','M','V','C','A','P','G']

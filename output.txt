@@ -1,0 +1,157 @@
+----
+Choose a protein sequence to play:
+[0] Human Beta Globin
+[1] Mice Beta Globin
+[2] Bacteria Beta Globin
+[3] Plant Cell
+[4] Enter Custom Sequence
+Input choice: 0
+M           D5   F#5  A5
+V    G4   B4  D5
+H        B4
+L      A4   C#5  E5
+T         C5
+P           D5
+E        B4   D#5  F#5
+E        B4   D#5  F#5
+K      A4   C#5  E5
+S             E5
+A        B4   D#5  F#5
+V    G4   B4  D5
+T         C5
+A        B4   D#5  F#5
+L      A4   C#5  E5
+W             E5   G#5  B5
+G      A4
+K      A4   C#5  E5
+V    G4   B4  D5
+N           D5   F#5  A5
+V    G4   B4  D5
+D         C5   E5  G5
+E        B4   D#5  F#5
+V    G4   B4  D5
+G      A4
+G      A4
+E        B4   D#5  F#5
+A        B4   D#5  F#5
+L      A4   C#5  E5
+G      A4
+R             E5   G#5  B5
+L      A4   C#5  E5
+L      A4   C#5  E5
+V    G4   B4  D5
+V    G4   B4  D5
+Y              F5
+P           D5
+W             E5   G#5  B5
+T         C5
+Q              F5   A5  C6
+R             E5   G#5  B5
+F         C5   E5  G5
+F         C5   E5  G5
+E        B4   D#5  F#5
+S             E5
+F         C5   E5  G5
+G      A4
+D         C5   E5  G5
+L      A4   C#5  E5
+S             E5
+T         C5
+P           D5
+D         C5   E5  G5
+A        B4   D#5  F#5
+V    G4   B4  D5
+M           D5   F#5  A5
+G      A4
+N           D5   F#5  A5
+P           D5
+K      A4   C#5  E5
+V    G4   B4  D5
+K      A4   C#5  E5
+A        B4   D#5  F#5
+H        B4
+G      A4
+K      A4   C#5  E5
+K      A4   C#5  E5
+V    G4   B4  D5
+L      A4   C#5  E5
+G      A4
+A        B4   D#5  F#5
+F         C5   E5  G5
+S             E5
+D         C5   E5  G5
+G      A4
+L      A4   C#5  E5
+A        B4   D#5  F#5
+H        B4
+L      A4   C#5  E5
+D         C5   E5  G5
+N           D5   F#5  A5
+L      A4   C#5  E5
+K      A4   C#5  E5
+G      A4
+T         C5
+F         C5   E5  G5
+A        B4   D#5  F#5
+T         C5
+L      A4   C#5  E5
+S             E5
+E        B4   D#5  F#5
+L      A4   C#5  E5
+H        B4
+C              F5   A5  C6
+D         C5   E5  G5
+K      A4   C#5  E5
+L      A4   C#5  E5
+H        B4
+V    G4   B4  D5
+D         C5   E5  G5
+P           D5
+E        B4   D#5  F#5
+N           D5   F#5  A5
+F         C5   E5  G5
+R             E5   G#5  B5
+L      A4   C#5  E5
+L      A4   C#5  E5
+G      A4
+N           D5   F#5  A5
+V    G4   B4  D5
+L      A4   C#5  E5
+V    G4   B4  D5
+C              F5   A5  C6
+V    G4   B4  D5
+L      A4   C#5  E5
+A        B4   D#5  F#5
+H        B4
+H        B4
+F         C5   E5  G5
+G      A4
+K      A4   C#5  E5
+E        B4   D#5  F#5
+F         C5   E5  G5
+T         C5
+P           D5
+P           D5
+V    G4   B4  D5
+Q              F5   A5  C6
+A        B4   D#5  F#5
+A        B4   D#5  F#5
+Y              F5
+Q              F5   A5  C6
+K      A4   C#5  E5
+V    G4   B4  D5
+V    G4   B4  D5
+A        B4   D#5  F#5
+G      A4
+V    G4   B4  D5
+A        B4   D#5  F#5
+N           D5   F#5  A5
+A        B4   D#5  F#5
+L      A4   C#5  E5
+A        B4   D#5  F#5
+H        B4
+K      A4   C#5  E5
+Y              F5
+H        B4
+Want to try another sequence? (yes/no) no
+Great music!

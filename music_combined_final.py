@@ -5,12 +5,18 @@
 # Program Uses: functions, for loops, conditional statements
 
 
-from synthesizer import Player, Synthesizer, Waveform
+from synthesizer import Player, Synthesizer, Waveform, Writer
 import csv
+import re
 
 
-# Beta Globin protein sequence
-protein_sequence = 'MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPKVKAHGKKVLGAFSDGLAHLDNLKGTFATLSELHCDKLHVDPENFRLLGNVLVCVLAHHFGKEFTPPVQAAYQKVVAGVANALAHKYH'
+protein_sequences = {
+    'Human Beta Globin': 'MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPKVKAHGKKVLGAFSDGLAHLDNLKGTFATLSELHCDKLHVDPENFRLLGNVLVCVLAHHFGKEFTPPVQAAYQKVVAGVANALAHKYH',
+    'Mice Beta Globin': 'MVHLTDAEKAAVSGLWGKVNADEVGGEALGRLLVVYPWTQRYFDSFGDLSSASAIMGNAKVKAHGKKVITAFNDGLNHLDSLKGTFASLSELHCDKLHVDPENFRLLGNMIVIVLGHHLGKDFTPAAQAAFQKVVAGVAAALAHKYH',
+    'Bacteria Beta Globin': 'MTNITPYDVIGGEQAIRHLVDRFYFYMDTLPEARGIRAMHQPDLASAKSKLFKFLSGWLGGPDLFAQEFGHPMLRARHLPFAIGESERDQWMLCMNKAVAETPMDPRLETNLKNALQELATHMINQEPD',
+    'Plant Cell': 'MSPEGYIRNALSTAIQFVHLNSDRFSTYSISNSLVTVALLPSFCTSPTTSISPSRSNQFTLIIIIKMKYSMAALALVGAVYALPNGGGYGSSESSSAPAGYGGYGGYGTVPAGTSSTPAYPTQASSTPVYPAEASSTPCETESTSTMSVPAASSSAPASQLYPRASSTPVYPTEASSTPVHPTEATSTPCETESTSTMSVPASSSTPVYPASSTPVYPTEASSTPVYPASSTPVYPTEATSTPCETESTSTPGHPTKASSTPVYPASSTPVYPTEASSTPVHPTEATSTPCETESTSTMTVPASSSTPVQPYEATSTPCETESTTTIIPSASLPVPPMSTPVVPHEASSTPCETESTTMPTPVVPTVATSTPVVPKETTTPCETESTAMSTPVSPRRLRLLARLRCSHPPMPVVPGSTSCSETTMATVGTPIVPQPAVSTSAPPHNATYTKPVYSASSTVPAPPVFTGAASSTKPFAAIMAGAAALMYML',
+}
+protein_sequence_list = list(protein_sequences.keys())
 
 hydrophobic_aa = ['V', 'I', 'L', 'M', 'F', 'W', 'C', 'A']  # G4 - A5 major chords with square wave instrument
 less_hydrophobic_aa = ['Y', 'H', 'T', 'S', 'P', 'G']  # A4 - F5 single notes with sine wave instrument
@@ -50,9 +56,6 @@ all_notes = list(notes.keys())
 lowest_note = all_notes.index('G4')
 note_range = all_notes[lowest_note:]
 
-# Create dictionary that will map each amino acid to the various musical properties
-association = {}
-
 
 def get_sorted_aa(sequence, amino_acids):
     """Returns sorted list of amino acids ordered from most to least frequently occurring in the protein sequence."""
@@ -90,47 +93,102 @@ def get_association(sequence, amino_acids, notes, instrument):
 
 def print_notes(note, aa):
     """Prints out the note/chord and amino acid being played."""
-    note_string = aa + '\t'
+    note_string = aa + '    '
     for n in note_range:
         if n in note:
             note_string += n
         else:
             note_string += ' '
-    print(note_string)
+    print(note_string.strip())
 
 
-# Generate association between amino acid and musical properties
-association.update(get_association(protein_sequence, hydrophobic_aa, hydrophobic_chords, 'square'))
-association.update(get_association(protein_sequence, less_hydrophobic_aa, less_hydrophobic_notes, 'sine'))
-association.update(get_association(protein_sequence, non_hydrophobic_aa, non_hydrophobic_chords, 'sawtooth'))
+def main(protein_sequence):
+    """Plays musical protein sequence."""
 
-# Create Player and Synthesizer objects to be used when playing protein sequence
-player = Player()
-player.open_stream()
-synthesizer = {
-    'polar': {
-        'sine': Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, use_osc2=False),
-        'sawtooth': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=1.0, use_osc2=False),
-        'square': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=1.0, use_osc2=False)
-    },
-    'nonpolar': {
-        'sine': Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.5, use_osc2=False),
-        'sawtooth': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=0.5, use_osc2=False),
-        'square': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=0.5, use_osc2=False)
-    },
-}
+    # Create dictionary that will map each amino acid to the various musical properties
+    association = {}
 
-# Loop through and play out each amino acid in the protein sequence
-for idx, aa in enumerate(protein_sequence):
-    note, instrument, volume, length = association[aa]
+    # Generate association between amino acid and musical properties
+    association.update(get_association(protein_sequence, hydrophobic_aa, hydrophobic_chords, 'square'))
+    association.update(get_association(protein_sequence, less_hydrophobic_aa, less_hydrophobic_notes, 'sine'))
+    association.update(get_association(protein_sequence, non_hydrophobic_aa, non_hydrophobic_chords, 'sawtooth'))
 
-    length = length if idx != len(protein_sequence) - 1 else 1  # Set length of last note to be 1s
+    # Create Player and Synthesizer objects to be used when playing protein sequence
+    player = Player()
+    player.open_stream()
+    synthesizer = {
+        'polar': {
+            'sine': Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, use_osc2=False),
+            'sawtooth': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=1.0, use_osc2=False),
+            'square': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=1.0, use_osc2=False)
+        },
+        'nonpolar': {
+            'sine': Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=0.5, use_osc2=False),
+            'sawtooth': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=0.5, use_osc2=False),
+            'square': Synthesizer(osc1_waveform=Waveform.sawtooth, osc1_volume=0.5, use_osc2=False)
+        },
+    }
 
-    if type(note) == list:  # Play chord
-        sound = synthesizer[volume][instrument].generate_chord([notes[n] for n in note], length)
-        print_notes(note, aa)
-    else:  # Play single note
-        sound = synthesizer[volume][instrument].generate_constant_wave(notes[note], length)
-        print_notes([note], aa)
+    # writer = Writer()
+    # sounds = []
 
-    player.play_wave(sound)
+    # Loop through and play out each amino acid in the protein sequence
+    for idx, aa in enumerate(protein_sequence):
+        if aa not in association:
+            continue
+
+        note, instrument, volume, length = association[aa]
+
+        length = length if idx != len(protein_sequence) - 1 else 0.5  # Set length of last note to be 0.5s
+
+        if type(note) == list:  # Play chord
+            sound = synthesizer[volume][instrument].generate_chord([notes[n] for n in note], length)
+            print_notes(note, aa)
+        else:  # Play single note
+            sound = synthesizer[volume][instrument].generate_constant_wave(notes[note], length)
+            print_notes([note], aa)
+
+        player.play_wave(sound)
+        # sounds.append(sound)
+
+    # writer.write_waves('mice_beta_globin.wav', *sounds)
+
+
+if __name__ == '__main__':
+
+    while True:
+        print('----')
+        print('Choose a protein sequence to play:')
+
+        for idx, protein in enumerate(protein_sequence_list):
+            print('[{}] {}'.format(idx, protein))
+
+        custom = idx + 1
+        print('[{}] Enter Custom Sequence'.format(custom))
+
+        try:
+            sel = int(input('Input choice: '))
+            if sel < 0 or sel > custom:
+                print('Not a valid option. Please select a number between 0 and {}.'.format(custom))
+                continue
+        except ValueError:
+            print('Not a valid option. Please select a numerical option.')
+            continue
+
+        if sel == custom:
+            print('* Valid Amino Acids: VILMFWCAYHTSPGKREDNQ *')
+            protein_sequence = str(input('Input amino acid sequence: ')).replace('\\', '').replace('\n', '').upper()
+            match = re.findall(r'[^VILMFWCAYHTSPGKREDNQ]', protein_sequence)
+            if match:
+                print('These amino acids are not valid: ' + ', '.join(match))
+                continue
+        else:
+            option = protein_sequence_list[sel]
+            protein_sequence = protein_sequences[option]
+
+        main(protein_sequence)
+
+        continue_yes_no = str(input('Want to try another sequence? (yes/no) ').upper())
+        if continue_yes_no == 'NO':
+            print('Great music!')
+            break
